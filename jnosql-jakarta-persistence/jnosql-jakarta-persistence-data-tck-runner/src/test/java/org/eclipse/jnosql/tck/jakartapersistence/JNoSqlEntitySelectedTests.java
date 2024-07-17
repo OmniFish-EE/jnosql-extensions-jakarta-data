@@ -90,7 +90,6 @@ public class JNoSqlEntitySelectedTests extends EntityTests {
     @Override
 //    EndsWith
 //    @Test
-    @Test
     public void testStaticMetamodelDescendingSortsPreGenerated() {
         super.testStaticMetamodelDescendingSortsPreGenerated();
     }
