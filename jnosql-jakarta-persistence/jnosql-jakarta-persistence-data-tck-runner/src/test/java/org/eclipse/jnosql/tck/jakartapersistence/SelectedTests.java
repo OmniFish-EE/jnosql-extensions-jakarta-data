@@ -540,6 +540,12 @@ public class SelectedTests {
     @ExtendWith(TransactionExtension.class)
     public class JNoSqlPersistenceEntitySelectedTests extends JNoSqlPersistenceEntityTests {
 
+        @Override
+        @Test
+        public void testLike() {
+            super.testLike();
+        }
+
     }
 
 }
