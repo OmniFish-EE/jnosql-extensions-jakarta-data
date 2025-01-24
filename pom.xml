@@ -27,6 +27,7 @@
     <artifactId>jnosql-mapping-extensions</artifactId>
     <packaging>pom</packaging>
 
+    <name>Eclipse JNoSQL extensions - parent</name>
     <description>Eclipse JNoSQL extensions</description>
     <url>https://jnosql.org/</url>
 
