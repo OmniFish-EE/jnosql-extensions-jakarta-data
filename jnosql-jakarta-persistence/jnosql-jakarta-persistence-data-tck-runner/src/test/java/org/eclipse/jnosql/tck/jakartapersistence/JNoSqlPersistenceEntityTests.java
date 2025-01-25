@@ -30,16 +30,19 @@ import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.eclipse.jnosql.jakartapersistence.communication.PersistenceDatabaseManager;
 import org.eclipse.jnosql.jakartapersistence.mapping.PersistenceDocumentTemplate;
 import org.eclipse.jnosql.jakartapersistence.mapping.spi.JakartaPersistenceExtension;
+import org.eclipse.jnosql.jakartapersistence.mapping.spi.EntityMetadataExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import ee.jakarta.tck.data.standalone.entity.EntityTests;
 
 @EnableAutoWeld
 @AddPackages(value = {Converters.class, EntityConverter.class, DocumentTemplate.class})
-@AddPackages(DocumentTemplateProducer.class)
-@AddPackages(Reflections.class)
-@AddExtensions({EntityMetadataExtension.class, JakartaPersistenceExtension.class})
-@AddPackages({PersistenceDocumentTemplate.class, PersistenceDatabaseManager.class})
-@AddPackages({JNoSqlPersistenceEntityTests.class, PersistenceEntityTests.class})
-@ExtendWith(TransactionExtension.class)
+@AddPackages(value = DocumentTemplateProducer.class)
+@AddPackages(value = Reflections.class)
+@AddExtensions(value = {EntityMetadataExtension.class, JakartaPersistenceExtension.class})
+@AddPackages(value = {PersistenceDocumentTemplate.class, PersistenceDatabaseManager.class})
+@AddPackages(value = {JNoSqlPersistenceEntityTests.class, EntityTests.class})
+@ExtendWith(value = TransactionExtension.class)
 public class JNoSqlPersistenceEntityTests extends PersistenceEntityTests {
 
 }
