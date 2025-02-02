@@ -32,6 +32,18 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
 
     @Override
     @Test
+    public void testEmptyQuery() {
+        super.testEmptyQuery();
+    }
+
+    @Override
+    @Test
+    public void testUpdateQueryWithoutWhereClause() {
+        super.testUpdateQueryWithoutWhereClause();
+    }
+
+    @Override
+    @Test
     public void testFindPage() {
         super.testFindPage();
     }
@@ -42,13 +54,9 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
     }
 
     @Override
+    @Test
     public void testUpdateQueryWithWhereClause() {
         super.testUpdateQueryWithWhereClause();
-    }
-
-    @Override
-    public void testUpdateQueryWithoutWhereClause() {
-        super.testUpdateQueryWithoutWhereClause();
     }
 
     @Override
@@ -346,11 +354,6 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
     @Override
     public void testEmptyResultException() {
         super.testEmptyResultException();
-    }
-
-    @Override
-    public void testEmptyQuery() {
-        super.testEmptyQuery();
     }
 
     @Override
