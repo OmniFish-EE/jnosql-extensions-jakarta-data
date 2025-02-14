@@ -32,6 +32,12 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
 
     @Override
     @Test
+    public void testPartialQuerySelectAndOrderBy() {
+        super.testPartialQuerySelectAndOrderBy();
+    }
+
+    @Override
+    @Test
     public void testQueryWithNot() {
         super.testQueryWithNot();
     }
@@ -157,11 +163,6 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
     @Test
     public void testPrimaryEntityClassDeterminedByLifeCycleMethods() {
         super.testPrimaryEntityClassDeterminedByLifeCycleMethods();
-    }
-
-    @Override
-    public void testPartialQuerySelectAndOrderBy() {
-        super.testPartialQuerySelectAndOrderBy();
     }
 
     @Override
