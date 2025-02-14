@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
 
     @Override
+    @Test
     public void testLiteralString() {
         super.testLiteralString();
     }
