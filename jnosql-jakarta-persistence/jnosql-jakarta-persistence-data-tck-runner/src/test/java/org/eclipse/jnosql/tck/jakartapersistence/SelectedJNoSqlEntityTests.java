@@ -31,6 +31,17 @@ import org.junit.jupiter.api.Test;
 class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
 
     @Override
+    public void testLiteralString() {
+        super.testLiteralString();
+    }
+
+    @Override
+    @Test
+    public void testLiteralTrue() {
+        super.testLiteralTrue();
+    }
+
+    @Override
     @Test
     public void testPartialQuerySelectAndOrderBy() {
         super.testPartialQuerySelectAndOrderBy();
@@ -206,16 +217,6 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
     @Override
     public void testMixedSort() {
         super.testMixedSort();
-    }
-
-    @Override
-    public void testLiteralTrue() {
-        super.testLiteralTrue();
-    }
-
-    @Override
-    public void testLiteralString() {
-        super.testLiteralString();
     }
 
     @Override
