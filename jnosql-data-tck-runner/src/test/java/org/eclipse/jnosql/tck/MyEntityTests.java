@@ -26,6 +26,7 @@ import org.eclipse.jnosql.mapping.semistructured.EntityConverter;
 import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.AddPackages;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.data.standalone.entity.EntityTests;
 
@@ -45,4 +46,11 @@ public class MyEntityTests extends EntityTests {
         System.setProperty(MongoDBDocumentConfigurations.HOST.get() + ".1", INSTANCE.host());
         System.setProperty(MappingConfigurations.DOCUMENT_DATABASE.get(), DATABASE_NAME);
     }
+
+        @Override
+    @Test
+    public void testEmptyQuery() {
+        super.testEmptyQuery();
+    }
+
 }

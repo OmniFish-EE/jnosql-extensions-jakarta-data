@@ -32,6 +32,18 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
 
     @Override
     @Test
+    public void testQueryWithNot() {
+        super.testQueryWithNot();
+    }
+
+    @Override
+    @Test
+    public void testDefaultMethod() {
+        super.testDefaultMethod();
+    }
+
+    @Override
+    @Test
     public void testEmptyQuery() {
         super.testEmptyQuery();
     }
@@ -139,11 +151,6 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
     @Override
     public void testQueryWithNull() {
         super.testQueryWithNull();
-    }
-
-    @Override
-    public void testQueryWithNot() {
-        super.testQueryWithNot();
     }
 
     @Override
@@ -359,11 +366,6 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
     @Override
     public void testDescendingSort() {
         super.testDescendingSort();
-    }
-
-    @Override
-    public void testDefaultMethod() {
-        super.testDefaultMethod();
     }
 
     @Override
