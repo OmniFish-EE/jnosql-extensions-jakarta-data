@@ -32,6 +32,12 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
 
     @Override
     @Test
+    public void testEmptyQuery() {
+        super.testEmptyQuery();
+    }
+
+    @Override
+    @Test
     public void testLiteralString() {
         super.testLiteralString();
     }
@@ -58,12 +64,6 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
     @Test
     public void testDefaultMethod() {
         super.testDefaultMethod();
-    }
-
-    @Override
-    @Test
-    public void testEmptyQuery() {
-        super.testEmptyQuery();
     }
 
     @Override
