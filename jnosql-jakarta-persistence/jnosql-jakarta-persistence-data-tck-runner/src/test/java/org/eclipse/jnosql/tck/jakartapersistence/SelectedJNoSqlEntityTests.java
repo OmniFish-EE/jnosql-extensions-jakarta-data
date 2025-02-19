@@ -32,6 +32,12 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
 
     @Override
     @Test
+    public void testLiteralInteger() {
+        super.testLiteralInteger();
+    }
+
+    @Override
+    @Test
     public void testEmptyQuery() {
         super.testEmptyQuery();
     }
@@ -218,11 +224,6 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
     @Override
     public void testMixedSort() {
         super.testMixedSort();
-    }
-
-    @Override
-    public void testLiteralInteger() {
-        super.testLiteralInteger();
     }
 
     @Override
