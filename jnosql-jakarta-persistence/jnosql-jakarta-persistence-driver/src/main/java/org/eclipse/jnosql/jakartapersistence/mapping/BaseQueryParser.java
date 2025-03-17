@@ -39,12 +39,14 @@ import org.eclipse.jnosql.jakartapersistence.communication.PersistenceDatabaseMa
 
 import static org.eclipse.jnosql.communication.Condition.AND;
 import static org.eclipse.jnosql.communication.Condition.BETWEEN;
+import static org.eclipse.jnosql.communication.Condition.CONTAINS;
 import static org.eclipse.jnosql.communication.Condition.EQUALS;
 import static org.eclipse.jnosql.communication.Condition.GREATER_EQUALS_THAN;
 import static org.eclipse.jnosql.communication.Condition.GREATER_THAN;
 import static org.eclipse.jnosql.communication.Condition.IN;
 import static org.eclipse.jnosql.communication.Condition.LESSER_EQUALS_THAN;
 import static org.eclipse.jnosql.communication.Condition.LESSER_THAN;
+import static org.eclipse.jnosql.communication.Condition.LIKE;
 import static org.eclipse.jnosql.communication.Condition.NOT;
 import static org.eclipse.jnosql.jakartapersistence.mapping.BaseQueryParser.elementCollection;
 import static org.eclipse.jnosql.jakartapersistence.mapping.BaseQueryParser.getComparableValue;
@@ -150,6 +152,14 @@ abstract class BaseQueryParser {
                     StringContext stringContext = StringContext.from(ctx, criteria);
                     yield ctx.builder().like(stringContext.field(), stringContext.fieldValue());
                 }
+                case CONTAINS -> {
+                    StringContext stringContext = StringContext.from(ctx, criteria);
+                    yield ctx.builder().like(stringContext.field(), "%" + stringContext.fieldValue() + "%");
+                }
+                case ENDS_WITH -> {
+                    StringContext stringContext = StringContext.from(ctx, criteria);
+                    yield ctx.builder().like(stringContext.field(), "%" + stringContext.fieldValue());
+                }
 
                 default ->
                     throw new UnsupportedOperationException("JNoSQL criteria condition "
@@ -191,6 +201,7 @@ abstract class BaseQueryParser {
 }
 
 record QueryContext<FROM>(Root<FROM> root, CriteriaBuilder builder) {
+
 }
 
 record ComparableContext(Path<Comparable> field, Expression<? extends Comparable> expression) {
