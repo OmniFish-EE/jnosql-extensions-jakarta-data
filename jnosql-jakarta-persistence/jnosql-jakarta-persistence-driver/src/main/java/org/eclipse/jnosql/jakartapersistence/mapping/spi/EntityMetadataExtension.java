@@ -14,12 +14,12 @@
  */
 package org.eclipse.jnosql.jakartapersistence.mapping.spi;
 
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.persistence.Entity;
 
 import org.eclipse.jnosql.mapping.metadata.ClassConverter;
@@ -32,9 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 /**
- * This class is a CDI extension to load all classes that has {@link Entity} annotation.
- * This extension will load all classes and put them in a map,
- * where the key is {@link Class#getName()} and the value is {@link EntityMetadata}
+ * This class is a CDI extension to load all classes that has {@link Entity}
+ * annotation. This extension will load all classes and put them in a map, where
+ * the key is {@link Class#getName()} and the value is {@link EntityMetadata}
  *
  * This is a copy of EntityMetadataExtension for NoSQL entities.
  *
@@ -54,7 +54,15 @@ public class EntityMetadataExtension implements Extension, GroupEntityMetadata {
         converter = ClassConverter.load();
     }
 
-    public void afterBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
+    public void vetoConflictingBeans(@Observes ProcessAnnotatedType annotatedType) {
+        Class<?> clazz = annotatedType.getAnnotatedType().getJavaClass();
+        if (GroupEntityMetadata.class.isAssignableFrom(clazz)) {
+            annotatedType.veto();
+        }
+    }
+
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
+
         LOGGER.fine("Starting the scanning process for Entity and Embeddable annotations: ");
 
         ClassScanner scanner = ClassScanner.load();
@@ -98,9 +106,9 @@ public class EntityMetadataExtension implements Extension, GroupEntityMetadata {
 
     @Override
     public String toString() {
-        return "EntityMetadataExtension{" + "classConverter=" + converter +
-                ", mappings-size=" + mappings.size() +
-                ", classes=" + classes +
-                '}';
+        return "EntityMetadataExtension{" + "classConverter=" + converter
+                + ", mappings-size=" + mappings.size()
+                + ", classes=" + classes
+                + '}';
     }
 }
