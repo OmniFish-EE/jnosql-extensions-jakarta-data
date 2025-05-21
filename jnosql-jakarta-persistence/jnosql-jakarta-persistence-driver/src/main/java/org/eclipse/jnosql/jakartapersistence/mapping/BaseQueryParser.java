@@ -167,23 +167,28 @@ Maybe: In,
         if (element.value().isNull()) {
             return ctx.builder().isNull(ctx.root().get(getName(element)));
         } else {
-            Expression<?> leftSide = ctx.root().get(getName(element));
-            Object rightSide = element.value().get();
+            ComparableContext comparableContext = ComparableContext.from(ctx, criteria);
+            Expression<? extends Comparable> leftSide = comparableContext.field();
+            Expression<? extends Comparable> rightSide = comparableContext.expression();
             if (ignoreCase) {
-                if (leftSide.getJavaType().isAssignableFrom(String.class) && rightSide instanceof String) {
+                if (leftAndRightOperandSupportIgnoreCase(leftSide, rightSide)) {
                     leftSide = ctx.builder().upper((Expression<String>) leftSide);
-                    rightSide = rightSide.toString().toUpperCase();
+                    rightSide = ctx.builder().upper((Expression<String>) rightSide);
                 } else {
-                    throw new UnsupportedOperationException("JNoSQL IgnoreCase supported only for String values. Criteria: " + criteria);
+                    throw new UnsupportedOperationException("IgnoreCase supported only for String values. Criteria: " + criteria);
                 }
             }
             return ctx.builder().equal(leftSide, rightSide);
         }
     }
 
+    private static boolean leftAndRightOperandSupportIgnoreCase(Expression<?> leftSide, Expression rightSide) {
+        return leftSide.getJavaType().isAssignableFrom(String.class) && rightSide.getJavaType().isAssignableFrom(String.class);
+    }
+
     private static <FROM> Predicate parseLesserThan(CriteriaCondition criteria, QueryContext<FROM> ctx, boolean ignoreCase) {
         if (ignoreCase) {
-            throw new UnsupportedOperationException("JNoSQL IgnoreCase for condition "
+            throw new UnsupportedOperationException("IgnoreCase for condition "
                     + criteria.condition() + " is not supported yet.");
         }
         ComparableContext comparableContext = ComparableContext.from(ctx, criteria);
@@ -192,7 +197,7 @@ Maybe: In,
 
     private static <FROM> Predicate parseLesserThanEquals(CriteriaCondition criteria, QueryContext<FROM> ctx, boolean ignoreCase) {
         if (ignoreCase) {
-            throw new UnsupportedOperationException("JNoSQL IgnoreCase for condition "
+            throw new UnsupportedOperationException("IgnoreCase for condition "
                     + criteria.condition() + " is not supported yet.");
         }
         ComparableContext comparableContext = ComparableContext.from(ctx, criteria);
@@ -201,7 +206,7 @@ Maybe: In,
 
     private static <FROM> Predicate parseGreaterThan(CriteriaCondition criteria, QueryContext<FROM> ctx, boolean ignoreCase) {
         if (ignoreCase) {
-            throw new UnsupportedOperationException("JNoSQL IgnoreCase for condition "
+            throw new UnsupportedOperationException("IgnoreCase for condition "
                     + criteria.condition() + " is not supported yet.");
         }
         ComparableContext comparableContext = ComparableContext.from(ctx, criteria);
@@ -210,7 +215,7 @@ Maybe: In,
 
     private static <FROM> Predicate parseGreaterEqualsThan(CriteriaCondition criteria, QueryContext<FROM> ctx, boolean ignoreCase) {
         if (ignoreCase) {
-            throw new UnsupportedOperationException("JNoSQL IgnoreCase for condition "
+            throw new UnsupportedOperationException("IgnoreCase for condition "
                     + criteria.condition() + " is not supported yet.");
         }
         ComparableContext comparableContext = ComparableContext.from(ctx, criteria);
@@ -219,7 +224,7 @@ Maybe: In,
 
     private static <FROM> Predicate parseBetween(CriteriaCondition criteria, QueryContext<FROM> ctx, boolean ignoreCase) {
         if (ignoreCase) {
-            throw new UnsupportedOperationException("JNoSQL IgnoreCase for condition "
+            throw new UnsupportedOperationException("IgnoreCase for condition "
                     + criteria.condition() + " is not supported yet.");
         }
         BiComparableContext comparableContext = BiComparableContext.from(ctx, criteria);
@@ -228,7 +233,7 @@ Maybe: In,
 
     private static <FROM> Predicate parseIn(CriteriaCondition criteria, QueryContext<FROM> ctx, boolean ignoreCase) {
         if (ignoreCase) {
-            throw new UnsupportedOperationException("JNoSQL IgnoreCase for condition "
+            throw new UnsupportedOperationException("IgnoreCase for condition "
                     + criteria.condition() + " is not supported yet.");
         }
         MultiValueContext valueContext = MultiValueContext.from(ctx, criteria);
@@ -239,7 +244,7 @@ Maybe: In,
 
     private static <FROM> Predicate parseLike(CriteriaCondition criteria, QueryContext<FROM> ctx, boolean ignoreCase) {
         if (ignoreCase) {
-            throw new UnsupportedOperationException("JNoSQL IgnoreCase for condition "
+            throw new UnsupportedOperationException("IgnoreCase for condition "
                     + criteria.condition() + " is not supported yet.");
         }
         StringContext stringContext = StringContext.from(ctx, criteria);
@@ -248,7 +253,7 @@ Maybe: In,
 
     private static <FROM> Predicate parseContains(CriteriaCondition criteria, QueryContext<FROM> ctx, boolean ignoreCase) {
         if (ignoreCase) {
-            throw new UnsupportedOperationException("JNoSQL IgnoreCase for condition "
+            throw new UnsupportedOperationException("IgnoreCase for condition "
                     + criteria.condition() + " is not supported yet.");
         }
         StringContext stringContext = StringContext.from(ctx, criteria);
@@ -257,7 +262,7 @@ Maybe: In,
 
     private static <FROM> Predicate parseEndsWith(CriteriaCondition criteria, QueryContext<FROM> ctx, boolean ignoreCase) {
         if (ignoreCase) {
-            throw new UnsupportedOperationException("JNoSQL IgnoreCase for condition "
+            throw new UnsupportedOperationException("IgnoreCase for condition "
                     + criteria.condition() + " is not supported yet.");
         }
         StringContext stringContext = StringContext.from(ctx, criteria);
