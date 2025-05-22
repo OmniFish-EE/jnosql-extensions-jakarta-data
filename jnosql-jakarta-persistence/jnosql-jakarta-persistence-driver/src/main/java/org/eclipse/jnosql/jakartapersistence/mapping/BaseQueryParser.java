@@ -49,9 +49,6 @@ import static org.eclipse.jnosql.communication.Condition.LESSER_EQUALS_THAN;
 import static org.eclipse.jnosql.communication.Condition.LESSER_THAN;
 import static org.eclipse.jnosql.communication.Condition.LIKE;
 import static org.eclipse.jnosql.communication.Condition.NOT;
-import static org.eclipse.jnosql.jakartapersistence.mapping.BaseQueryParser.elementCollection;
-import static org.eclipse.jnosql.jakartapersistence.mapping.BaseQueryParser.getComparableValue;
-import static org.eclipse.jnosql.jakartapersistence.mapping.BaseQueryParser.getName;
 
 abstract class BaseQueryParser {
 
@@ -246,7 +243,7 @@ Maybe: In,
         return (Collection<?>) element.value().get();
     }
 
-    static Expression<? extends Comparable> getComparableValue(CriteriaBuilder cb, Object value) {
+    static Expression<? extends Comparable> getComparableExpression(CriteriaBuilder cb, Object value) {
         if (value instanceof Comparable result) {
             return cb.literal(result);
         } else if (value instanceof ParamValue param && param.isEmpty()) {
@@ -265,82 +262,82 @@ Maybe: In,
     private static boolean isStringExpression(Expression<? extends Comparable> expression) {
         return expression.getJavaType().isAssignableFrom(String.class);
     }
-}
 
-record QueryContext<FROM>(Root<FROM> root, CriteriaBuilder builder) {
+    record QueryContext<FROM>(Root<FROM> root, CriteriaBuilder builder) {
 
-}
+    }
 
-record ComparableContext(Expression<? extends Comparable> field, Expression<? extends Comparable> expression) {
+    record ComparableContext(Expression<? extends Comparable> field, Expression<? extends Comparable> expression) {
 
-    public static <FROM> ComparableContext from(QueryContext ctx, CriteriaCondition criteria, boolean ignoreCase) {
-        Element element = (Element) criteria.element();
-        Expression<? extends Comparable> field = ctx.root().get(getName(element));
-        Expression<? extends Comparable> expression = getComparableValue(ctx.builder(), element.value());
-        if (ignoreCase) {
-            if (BaseQueryParser.comparisonSupportsIgnoreCase(field, expression)) {
-                field = ctx.builder().upper((Expression<String>) field);
-                expression = ctx.builder().upper((Expression<String>) expression);
-            } else {
-                throw new UnsupportedOperationException("IgnoreCase supported only for String values. Criteria: " + criteria);
+        public static <FROM> ComparableContext from(QueryContext ctx, CriteriaCondition criteria, boolean ignoreCase) {
+            Element element = (Element) criteria.element();
+            Expression<? extends Comparable> field = ctx.root().get(getName(element));
+            Expression<? extends Comparable> expression = getComparableExpression(ctx.builder(), element.value());
+            if (ignoreCase) {
+                if (BaseQueryParser.comparisonSupportsIgnoreCase(field, expression)) {
+                    field = ctx.builder().upper((Expression<String>) field);
+                    expression = ctx.builder().upper((Expression<String>) expression);
+                } else {
+                    throw new UnsupportedOperationException("IgnoreCase supported only for String values. Criteria: " + criteria);
+                }
             }
+            return new ComparableContext(field, expression);
         }
-        return new ComparableContext(field, expression);
+
     }
 
-}
+    record StringContext(Path<String> field, String fieldValue) {
 
-record StringContext(Path<String> field, String fieldValue) {
-
-    public static <FROM> StringContext from(QueryContext ctx, CriteriaCondition criteria) {
-        Element element = (Element) criteria.element();
-        Path<String> field = ctx.root().get(getName(element));
-        String fieldValue = element.value().get(String.class);
-        return new StringContext(field, fieldValue);
+        public static <FROM> StringContext from(QueryContext ctx, CriteriaCondition criteria) {
+            Element element = (Element) criteria.element();
+            Path<String> field = ctx.root().get(getName(element));
+            String fieldValue = element.value().get(String.class);
+            return new StringContext(field, fieldValue);
+        }
     }
-}
 
-record BiComparableContext(Expression<? extends Comparable> field, Expression<? extends Comparable> expression1, Expression<? extends Comparable> expression2) {
+    record BiComparableContext(Expression<? extends Comparable> field, Expression<? extends Comparable> expression1, Expression<? extends Comparable> expression2) {
 
-    public static <FROM> BiComparableContext from(QueryContext ctx, CriteriaCondition criteria, boolean ignoreCase) {
-        Element element = criteria.element();
-        Expression<? extends Comparable> field = ctx.root().get(getName(element));
-        Iterator<?> iterator = elementCollection(criteria).iterator();
-        Expression<? extends Comparable> expression1 = getComparableValue(ctx.builder(), iterator.next());
-        Expression<? extends Comparable> expression2 = getComparableValue(ctx.builder(), iterator.next());
-        if (ignoreCase) {
-            if (BaseQueryParser.comparisonSupportsIgnoreCase(field, expression1, expression2)) {
-                field = ctx.builder().upper((Expression<String>) field);
-                expression1 = ctx.builder().upper((Expression<String>) expression1);
-                expression2 = ctx.builder().upper((Expression<String>) expression2);
-            } else {
-                throw new UnsupportedOperationException("IgnoreCase supported only for String values. Criteria: " + criteria);
+        public static <FROM> BiComparableContext from(QueryContext ctx, CriteriaCondition criteria, boolean ignoreCase) {
+            Element element = criteria.element();
+            Expression<? extends Comparable> field = ctx.root().get(getName(element));
+            Iterator<?> iterator = elementCollection(criteria).iterator();
+            Expression<? extends Comparable> expression1 = getComparableExpression(ctx.builder(), iterator.next());
+            Expression<? extends Comparable> expression2 = getComparableExpression(ctx.builder(), iterator.next());
+            if (ignoreCase) {
+                if (BaseQueryParser.comparisonSupportsIgnoreCase(field, expression1, expression2)) {
+                    field = ctx.builder().upper((Expression<String>) field);
+                    expression1 = ctx.builder().upper((Expression<String>) expression1);
+                    expression2 = ctx.builder().upper((Expression<String>) expression2);
+                } else {
+                    throw new UnsupportedOperationException("IgnoreCase supported only for String values. Criteria: " + criteria);
+                }
             }
+            return new BiComparableContext(field, expression1, expression2);
         }
-        return new BiComparableContext(field, expression1, expression2);
+
     }
 
-}
+    record MultiValueContext(Path<?> field, Collection<?> fieldValues) {
 
-record MultiValueContext(Path<?> field, Collection<?> fieldValues) {
-
-    public static <FROM> MultiValueContext from(QueryContext ctx, CriteriaCondition criteria, boolean ignoreCase) {
-        if (ignoreCase) {
-            throw new UnsupportedOperationException("IgnoreCase for condition "
-                    + criteria.condition() + " is not supported yet.");
+        public static <FROM> MultiValueContext from(QueryContext ctx, CriteriaCondition criteria, boolean ignoreCase) {
+            if (ignoreCase) {
+                throw new UnsupportedOperationException("IgnoreCase for condition "
+                        + criteria.condition() + " is not supported yet.");
+            }
+            Element element = (Element) criteria.element();
+            Path<Comparable> field = ctx.root().get(getName(element));
+            final var expressions = elementCollection(criteria)
+                    .stream()
+                    .map(elem -> {
+                        if (elem instanceof Value value) {
+                            return value.get();
+                        } else {
+                            return elem;
+                        }
+                    })
+                    .toList();
+            return new MultiValueContext(field, expressions);
         }
-        Element element = (Element) criteria.element();
-        Path<Comparable> field = ctx.root().get(getName(element));
-        final var expressions = elementCollection(criteria)
-                .stream()
-                .map(elem -> {
-                    if (elem instanceof Value value) {
-                        return value.get();
-                    } else {
-                        return elem;
-                    }
-                })
-                .toList();
-        return new MultiValueContext(field, expressions);
     }
 }
