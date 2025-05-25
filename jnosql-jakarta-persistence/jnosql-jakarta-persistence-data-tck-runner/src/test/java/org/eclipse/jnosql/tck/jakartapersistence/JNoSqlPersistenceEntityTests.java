@@ -25,8 +25,6 @@ import org.jboss.weld.junit5.auto.AddExtensions;
 import org.jboss.weld.junit5.auto.AddPackages;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 
-
-
 import org.eclipse.jnosql.jakartapersistence.communication.PersistenceDatabaseManager;
 import org.eclipse.jnosql.jakartapersistence.mapping.PersistenceDocumentTemplate;
 import org.eclipse.jnosql.jakartapersistence.mapping.spi.JakartaPersistenceExtension;
@@ -47,13 +45,23 @@ import ee.jakarta.tck.data.standalone.entity.EntityTests;
 public class JNoSqlPersistenceEntityTests extends PersistenceEntityTests {
 
     /**
-     * This test expects running outside of a global transaction. It should be executed
-     * in {@link JNoSqlPersistenceEntityTestsNoGlobalTx}
+     * This test expects running outside of a global transaction. It should be
+     * executed in {@link JNoSqlPersistenceEntityTestsNoGlobalTx}
      */
     @Override
     @Disabled
     public void testVersionedInsertUpdateDelete() {
         super.testVersionedInsertUpdateDelete();
+    }
+
+    /**
+     * This test expects running outside of a global transaction. It should be
+     * executed in {@link JNoSqlPersistenceEntityTestsNoGlobalTx}
+     */
+    @Override
+    @Disabled
+    public void testMultipleInsertUpdateDelete() {
+        super.testMultipleInsertUpdateDelete();
     }
 
 }
