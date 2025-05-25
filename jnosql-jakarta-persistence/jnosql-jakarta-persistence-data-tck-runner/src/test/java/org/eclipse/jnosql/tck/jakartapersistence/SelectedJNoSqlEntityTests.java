@@ -31,34 +31,8 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
 
     @Test
     @Override
-    // Ignore case (findByHexadecimalIgnoreCase)
-    public void testSingleEntity() {
-        super.testSingleEntity();
-    }
-
-    @Test
-    @Override
-    // AND condition (findByHexadecimalContainsAndIsControlNot)
-    public void testContainsInString() {
-        super.testContainsInString();
-    }
-
-    @Test
-    @Override
-    public void testStaticMetamodelDescendingSorts() {
-        super.testStaticMetamodelDescendingSorts();
-    }
-
-    @Test
-    @Override
-    public void testStaticMetamodelAscendingSortsPreGenerated() {
-        super.testStaticMetamodelAscendingSortsPreGenerated();
-    }
-
-    @Test
-    @Override
-    public void testPrimaryEntityClassDeterminedByLifeCycleMethods() {
-        super.testPrimaryEntityClassDeterminedByLifeCycleMethods();
+    public void testFindFirst() {
+        super.testFindFirst();
     }
 
     @Test
@@ -67,45 +41,4 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
         super.testLiteralTrue();
     }
 
-    @Test
-    @Override
-    public void testIgnoreCase() {
-        super.testIgnoreCase();
-    }
-
-    @Test
-    @Override
-    public void testGreaterThanEqualExists() {
-        super.testGreaterThanEqualExists();
-    }
-
-    @Test
-    @Override
-    public void testFindFirst3() {
-        super.testFindFirst3();
-    }
-
-    @Test
-    @Override
-    public void testFindFirst() {
-        super.testFindFirst();
-    }
-
-    @Test
-    @Override
-    public void testEmptyResultException() {
-        super.testEmptyResultException();
-    }
-
-    @Test
-    @Override
-    public void testDataRepository() {
-        super.testDataRepository();
-    }
-
-    @Test
-    @Override
-    public void testCommonInterfaceQueries() {
-        super.testCommonInterfaceQueries();
-    }
 }
