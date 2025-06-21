@@ -31,12 +31,6 @@ class SelectedJNoSqlEntityTests extends JNoSqlEntityTests {
 
     @Test
     @Override
-    public void testFindFirst() {
-        super.testFindFirst();
-    }
-
-    @Test
-    @Override
     public void testLiteralTrue() {
         super.testLiteralTrue();
     }

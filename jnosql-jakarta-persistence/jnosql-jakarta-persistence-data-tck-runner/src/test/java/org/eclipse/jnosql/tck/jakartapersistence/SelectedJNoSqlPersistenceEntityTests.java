@@ -18,7 +18,6 @@ package org.eclipse.jnosql.tck.jakartapersistence;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -28,11 +27,5 @@ import org.junit.jupiter.api.Test;
 @DisplayName(value = "Selected PersistenceEntity tests")
 @EnableAutoWeld
 public class SelectedJNoSqlPersistenceEntityTests extends JNoSqlPersistenceEntityTests {
-
-    @Override
-    @Test
-    public void testNull() {
-        super.testNull();
-    }
 
 }
