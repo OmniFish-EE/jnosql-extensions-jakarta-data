@@ -16,7 +16,9 @@
   ~   Arjan Tijms
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -60,10 +62,8 @@
                     <groupId>org.eclipse.jnosql.communication</groupId>
                     <artifactId>jnosql-communication-query</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.jnosql.mapping</groupId>
-                    <artifactId>jnosql-mapping-reflection</artifactId>
-                </exclusion>
+                <!-- <exclusion> <groupId>org.eclipse.jnosql.mapping</groupId> 
+                    <artifactId>jnosql-mapping-reflection</artifactId> </exclusion> -->
             </exclusions>
         </dependency>
         <dependency>
@@ -112,7 +112,6 @@
             <groupId>org.eclipse.jnosql.mapping</groupId>
             <artifactId>jnosql-mapping-reflection</artifactId>
             <version>${jnosql-mapping.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -216,25 +215,26 @@
                     <instructions>
                         <_noimportjava>true</_noimportjava>
                         <_runee>JavaSE-17</_runee>
-                        <!--
-                        <Automatic-Module-Name>org.eclipse.jnosql.jakartapersistence</Automatic-Module-Name>
-                        -->
+                        <!-- <Automatic-Module-Name>org.eclipse.jnosql.jakartapersistence</Automatic-Module-Name> -->
                         <Extension-Name>org.eclipse.jnosql.jakartapersistence</Extension-Name>
-                        
+
                         <Bundle-SymbolicName>org.eclipse.jnosql.jakartapersistence</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Bundle-Name>Jakarta Data Implementation ${project.version}</Bundle-Name>
-                        <Bundle-Description>Eclipse Jakarta Data Implementation (jakarta.data/1.0) ${project.version}</Bundle-Description>  
-                        
+                        <Bundle-Description>Eclipse Jakarta Data Implementation (jakarta.data/1.0) ${project.version}</Bundle-Description>
+
                         <Specification-Title>Jakarta Data</Specification-Title>
                         <Specification-Version>1.0</Specification-Version>
                         <Specification-Vendor>Eclipse Foundation</Specification-Vendor>
-                        
-                        <Implementation-Title>JNoSQL Jakarta Persistence</Implementation-Title> 
+
+                        <Implementation-Title>JNoSQL Jakarta Persistence</Implementation-Title>
                         <Implementation-Version>${project.version}</Implementation-Version>
-                        <Implementation-Vendor>Eclipse</Implementation-Vendor> 
+                        <Implementation-Vendor>Eclipse</Implementation-Vendor>
                         <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
-                        
+
+                        <Import-Package>
+                            !org.eclipse.jnosql.**, *
+                        </Import-Package>
                         <Export-Package>
                             org.eclipse.jnosql.jakartapersistence.*
                         </Export-Package>
@@ -251,20 +251,17 @@
                 </executions>
             </plugin>
 
-
             <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.2</version>
                 <configuration>
                     <archive>
-                        <manifestFile>
-                            ${project.build.outputDirectory}/META-INF/MANIFEST.MF
-                        </manifestFile>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
                 </configuration>
             </plugin>
-            
+
             <!-- Check licenses of dependencies -->
             <plugin>
                 <groupId>org.eclipse.dash</groupId>
@@ -279,7 +276,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- Generate a "consumer pom" for the generated jar -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -309,4 +306,52 @@
             </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+        <profile>
+            <id>shade</id>
+    
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                                    <useDependencyReducedPomInJar>true</useDependencyReducedPomInJar>
+                                    <artifactSet>
+                                        <includes>
+                                            <!-- JNoSQL -->
+                                            <include>org.eclipse.jnosql.mapping:*:*</include>
+                                            <include>org.eclipse.jnosql.communication:*:*</include>
+                                        </includes>
+                                    </artifactSet>
+    
+                                    <transformers>
+                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                                    </transformers>
+    
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.eclipse.jnosql.mapping:jnosql-mapping-reflection</artifact>
+                                            <excludes>
+                                                <exclude>META-INF/services/org.eclipse.jnosql.mapping.metadata.ClassScanner</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
