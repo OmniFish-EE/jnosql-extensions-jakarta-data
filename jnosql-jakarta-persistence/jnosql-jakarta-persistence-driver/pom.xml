@@ -36,6 +36,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <osgi.imports>*</osgi.imports>
     </properties>
 
     <dependencies>
@@ -233,7 +234,7 @@
                         <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
 
                         <Import-Package>
-                            !org.eclipse.jnosql.**, *
+                            ${osgi.imports}
                         </Import-Package>
                         <Export-Package>
                             org.eclipse.jnosql.jakartapersistence.*
@@ -310,6 +311,10 @@
     <profiles>
         <profile>
             <id>shade</id>
+            
+            <properties>
+                <osgi.imports>!org.eclipse.jnosql.**, *</osgi.imports>
+            </properties>
     
             <build>
                 <plugins>
@@ -330,6 +335,7 @@
                                             <!-- JNoSQL -->
                                             <include>org.eclipse.jnosql.mapping:*:*</include>
                                             <include>org.eclipse.jnosql.communication:*:*</include>
+                                            <include>jakarta.nosql:*:*</include>
                                         </includes>
                                     </artifactSet>
     
