@@ -234,10 +234,10 @@
                         <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
 
                         <Import-Package>
-                            ${osgi.imports}
+                            jakarta.enterprise.inject.spi.configurator, ${osgi.imports}
                         </Import-Package>
                         <Export-Package>
-                            org.eclipse.jnosql.jakartapersistence.*
+                            org.eclipse.jnosql.jakartapersistence.*, ${osgi.exports}
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -314,6 +314,7 @@
             
             <properties>
                 <osgi.imports>!org.eclipse.jnosql.**, *</osgi.imports>
+                <osgi.exports>org.eclipse.jnosql.mapping, org.eclipse.jnosql.mapping.metadata</osgi.exports>
             </properties>
     
             <build>
