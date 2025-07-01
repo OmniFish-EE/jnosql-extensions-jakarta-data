@@ -383,11 +383,19 @@
                         </executions>
                     </plugin>
                     <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <extensions>false</extensions>
+                        <configuration>
+                            <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
                         <version>3.1.1</version>
                         <configuration>
-                            <altDeploymentRepository>local::default::file://${project.basedir}/target/deploy</altDeploymentRepository>
+                            <altDeploymentRepository>local::file:///${project.basedir}/target/deploy</altDeploymentRepository>
                         </configuration>
                     </plugin>
                 </plugins>
