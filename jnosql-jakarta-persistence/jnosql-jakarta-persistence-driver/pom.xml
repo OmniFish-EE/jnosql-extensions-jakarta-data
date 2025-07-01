@@ -27,6 +27,7 @@
         <version>1.1.8-SNAPSHOT</version>
     </parent>
 
+    <groupId>ee.omnifish</groupId>
     <artifactId>jnosql-jakarta-persistence</artifactId>
     <packaging>jar</packaging>
 
@@ -363,9 +364,13 @@
         
         <profile>
             <id>release</id>
+            
             <properties>
-                <docs.phase>package</docs.phase>
+                <altDeploymentRepository>central::https://central.sonatype.com/repository/maven-snapshots</altDeploymentRepository>
+                <altSnapshotDeploymentRepository>central::https://central.sonatype.com/repository/maven-snapshots</altSnapshotDeploymentRepository>
+                <deploy.skip>false</deploy.skip>
             </properties>
+            
             <build>
                 <plugins>
                     <!-- Signing with GPG is a requirement for a release deployment to Maven central. -->
@@ -385,17 +390,10 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.7.0</version>
                         <extensions>false</extensions>
                         <configuration>
                             <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <version>3.1.1</version>
-                        <configuration>
-                            <altDeploymentRepository>local::file:///${project.basedir}/target/deploy</altDeploymentRepository>
                         </configuration>
                     </plugin>
                 </plugins>
