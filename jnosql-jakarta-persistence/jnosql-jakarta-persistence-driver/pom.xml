@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~
-  ~  Copyright (c) 2024 Contributors to the Eclipse Foundation
-  ~   All rights reserved. This program and the accompanying materials
-  ~   are made available under the terms of the Eclipse Public License v1.0
-  ~   and Apache License v2.0 which accompanies this distribution.
-  ~   The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
-  ~   and the Apache License v2.0 is available at http://www.opensource.org/licenses/apache2.0.php.
-  ~
-  ~   You may elect to redistribute this code under either of these licenses.
-  ~
-  ~   Contributors:
-  ~
-  ~   Ondro Mihalyi
-  ~   Arjan Tijms
-  ~
-  -->
+~
+~  Copyright (c) 2024 Contributors to the Eclipse Foundation
+~   All rights reserved. This program and the accompanying materials
+~   are made available under the terms of the Eclipse Public License v1.0
+~   and Apache License v2.0 which accompanies this distribution.
+~   The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+~   and the Apache License v2.0 is available at http://www.opensource.org/licenses/apache2.0.php.
+~
+~   You may elect to redistribute this code under either of these licenses.
+~
+~   Contributors:
+~
+~   Ondro Mihalyi
+~   Arjan Tijms
+~
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -65,7 +65,7 @@
                     <artifactId>jnosql-communication-query</artifactId>
                 </exclusion>
                 <!-- <exclusion> <groupId>org.eclipse.jnosql.mapping</groupId> 
-                    <artifactId>jnosql-mapping-reflection</artifactId> </exclusion> -->
+                <artifactId>jnosql-mapping-reflection</artifactId> </exclusion> -->
             </exclusions>
         </dependency>
         <dependency>
@@ -208,62 +208,6 @@
                 </executions>
             </plugin>
 
-            <!-- Creates the OSGi MANIFEST.MF file -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>6.0.0</version>
-                <configuration>
-                    <instructions>
-                        <_noimportjava>true</_noimportjava>
-                        <_runee>JavaSE-17</_runee>
-                        <!-- <Automatic-Module-Name>org.eclipse.jnosql.jakartapersistence</Automatic-Module-Name> -->
-                        <Extension-Name>org.eclipse.jnosql.jakartapersistence</Extension-Name>
-
-                        <Bundle-SymbolicName>org.eclipse.jnosql.jakartapersistence</Bundle-SymbolicName>
-                        <Bundle-Version>${project.version}</Bundle-Version>
-                        <Bundle-Name>Jakarta Data Implementation ${project.version}</Bundle-Name>
-                        <Bundle-Description>Eclipse Jakarta Data Implementation (jakarta.data/1.0) ${project.version}</Bundle-Description>
-
-                        <Specification-Title>Jakarta Data</Specification-Title>
-                        <Specification-Version>1.0</Specification-Version>
-                        <Specification-Vendor>Eclipse Foundation</Specification-Vendor>
-
-                        <Implementation-Title>JNoSQL Jakarta Persistence</Implementation-Title>
-                        <Implementation-Version>${project.version}</Implementation-Version>
-                        <Implementation-Vendor>Eclipse</Implementation-Vendor>
-                        <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
-
-                        <Import-Package>
-                            jakarta.enterprise.inject.spi.configurator, ${osgi.imports}
-                        </Import-Package>
-                        <Export-Package>
-                            org.eclipse.jnosql.jakartapersistence.*, ${osgi.exports}
-                        </Export-Package>
-                    </instructions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>manifest</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
-                <configuration>
-                    <archive>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
-                </configuration>
-            </plugin>
-
             <!-- Check licenses of dependencies -->
             <plugin>
                 <groupId>org.eclipse.dash</groupId>
@@ -320,6 +264,68 @@
     
             <build>
                 <plugins>
+                    <!-- Creates the OSGi MANIFEST.MF file -->
+                    <plugin>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>maven-bundle-plugin</artifactId>
+                        <version>6.0.0</version>
+                        <configuration>
+                            <instructions>
+                                <_noimportjava>true</_noimportjava>
+                                <_runee>JavaSE-17</_runee>
+                                <!-- <Automatic-Module-Name>org.eclipse.jnosql.jakartapersistence</Automatic-Module-Name> -->
+                                <Extension-Name>org.eclipse.jnosql.jakartapersistence</Extension-Name>
+
+                                <Bundle-SymbolicName>org.eclipse.jnosql.jakartapersistence</Bundle-SymbolicName>
+                                <Bundle-Version>${project.version}</Bundle-Version>
+                                <Bundle-Name>Jakarta Data Implementation ${project.version}</Bundle-Name>
+                                <Bundle-Description>Eclipse Jakarta Data Implementation (jakarta.data/1.0) ${project.version}</Bundle-Description>
+
+                                <Specification-Title>Jakarta Data</Specification-Title>
+                                <Specification-Version>1.0</Specification-Version>
+                                <Specification-Vendor>Eclipse Foundation</Specification-Vendor>
+
+                                <Implementation-Title>JNoSQL Jakarta Persistence</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Implementation-Vendor>Eclipse</Implementation-Vendor>
+                                <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
+
+                                <Import-Package>
+                                    jakarta.enterprise.inject.spi.configurator, !org.antlr.*, ${osgi.imports}
+                                </Import-Package>
+                                <Embed-Dependency>org.antlr:*,
+                                                    org.eclipse.jnosql.mapping:*,
+                                                    org.eclipse.jnosql.communication:*,
+                                                    jakarta.nosql:*
+                                </Embed-Dependency>
+                                <Export-Package>
+                                    org.eclipse.jnosql.jakartapersistence.*, org.eclipse.jnosql.communication.*,
+                                    org.eclipse.jnosql.mapping.core.spi.*, ${osgi.exports}
+                                </Export-Package>
+                            </instructions>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>bundle-manifest</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>manifest</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
+                    <plugin>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.4.2</version>
+                        <configuration>
+                            <archive>
+                                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                            </archive>
+                        </configuration>
+                    </plugin>
+
                     <plugin>
                         <artifactId>maven-shade-plugin</artifactId>
                         <version>3.6.0</version>
@@ -338,6 +344,7 @@
                                             <include>org.eclipse.jnosql.mapping:*:*</include>
                                             <include>org.eclipse.jnosql.communication:*:*</include>
                                             <include>jakarta.nosql:*:*</include>
+                                            <include>org.antlr:*:*</include>
                                         </includes>
                                     </artifactSet>
     
