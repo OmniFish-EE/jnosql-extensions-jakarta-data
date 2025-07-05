@@ -300,7 +300,8 @@
                                 </Embed-Dependency>
                                 <Export-Package>
                                     org.eclipse.jnosql.jakartapersistence.*, org.eclipse.jnosql.communication.*,
-                                    org.eclipse.jnosql.mapping.core.spi.*, ${osgi.exports}
+                                    org.eclipse.jnosql.mapping.core.spi.*, org.eclipse.jnosql.mapping.document.*, 
+                                    org.eclipse.jnosql.mapping.core.*, ${osgi.exports}
                                 </Export-Package>
                             </instructions>
                         </configuration>
@@ -353,11 +354,28 @@
                                         <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
                                     </transformers>
     
+                                    <!-- Disable CDI extensions in JNoSQL except the Jakarta Persistence extension 
+                                         until we integrate them properly. Currently they conflict with the Jakarta Persistence extension 
+                                    -->
                                     <filters>
                                         <filter>
                                             <artifact>org.eclipse.jnosql.mapping:jnosql-mapping-reflection</artifact>
                                             <excludes>
+                                                <!-- Disable the default JNoSql ClassScanner to allow adding a custom one -->
                                                 <exclude>META-INF/services/org.eclipse.jnosql.mapping.metadata.ClassScanner</exclude>
+                                                <exclude>META-INF/services/jakarta.enterprise.inject.spi.Extension</exclude>
+                                            </excludes>
+                                        </filter>
+                                        <filter>
+                                            <artifact>org.eclipse.jnosql.mapping:jnosql-mapping-document</artifact>
+                                            <excludes>
+                                                <exclude>META-INF/services/jakarta.enterprise.inject.spi.Extension</exclude>
+                                            </excludes>
+                                        </filter>
+                                        <filter>
+                                            <artifact>org.eclipse.jnosql.mapping:jnosql-mapping-core</artifact>
+                                            <excludes>
+                                                <exclude>META-INF/services/jakarta.enterprise.inject.spi.Extension</exclude>
                                             </excludes>
                                         </filter>
                                     </filters>
