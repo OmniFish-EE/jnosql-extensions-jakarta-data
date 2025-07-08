@@ -27,7 +27,6 @@
         <version>1.1.8-SNAPSHOT</version>
     </parent>
 
-    <groupId>ee.omnifish</groupId>
     <artifactId>jnosql-jakarta-persistence</artifactId>
     <packaging>jar</packaging>
 
@@ -64,8 +63,6 @@
                     <groupId>org.eclipse.jnosql.communication</groupId>
                     <artifactId>jnosql-communication-query</artifactId>
                 </exclusion>
-                <!-- <exclusion> <groupId>org.eclipse.jnosql.mapping</groupId> 
-                <artifactId>jnosql-mapping-reflection</artifactId> </exclusion> -->
             </exclusions>
         </dependency>
         <dependency>
@@ -162,13 +159,6 @@
         </dependency>
     </dependencies>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>dash-licenses-snapshots</id>
-            <url>https://repo.eclipse.org/content/groups/releases/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <build>
         <pluginManagement>
             <plugins>
@@ -187,242 +177,23 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+
         <plugins>
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.5.0</version>
-                <executions>
-                    <execution>
-                        <id>enforce-maven</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>3.9.5</version>
-                                </requireMavenVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- Check licenses of dependencies -->
             <plugin>
                 <groupId>org.eclipse.dash</groupId>
                 <artifactId>license-tool-plugin</artifactId>
-                <version>1.1.0</version>
-                <executions>
-                    <execution>
-                        <id>license-check</id>
-                        <goals>
-                            <goal>license-check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- Generate a "consumer pom" for the generated jar -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.7.0</version>
-                <configuration>
-                    <flattenMode>ossrh</flattenMode>
-                </configuration>
-                <executions>
-                    <!-- enable flattening -->
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <!-- ensure proper cleanup -->
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
-    
-    <profiles>
-        <profile>
-            <id>shade</id>
-            
-            <properties>
-                <osgi.imports>!org.eclipse.jnosql.**, *</osgi.imports>
-                <osgi.exports>org.eclipse.jnosql.mapping, org.eclipse.jnosql.mapping.metadata</osgi.exports>
-            </properties>
-    
-            <build>
-                <plugins>
-                    <!-- Creates the OSGi MANIFEST.MF file -->
-                    <plugin>
-                        <groupId>org.apache.felix</groupId>
-                        <artifactId>maven-bundle-plugin</artifactId>
-                        <version>6.0.0</version>
-                        <configuration>
-                            <instructions>
-                                <_noimportjava>true</_noimportjava>
-                                <_runee>JavaSE-17</_runee>
-                                <!-- <Automatic-Module-Name>org.eclipse.jnosql.jakartapersistence</Automatic-Module-Name> -->
-                                <Extension-Name>org.eclipse.jnosql.jakartapersistence</Extension-Name>
-
-                                <Bundle-SymbolicName>org.eclipse.jnosql.jakartapersistence</Bundle-SymbolicName>
-                                <Bundle-Version>${project.version}</Bundle-Version>
-                                <Bundle-Name>Jakarta Data Implementation ${project.version}</Bundle-Name>
-                                <Bundle-Description>Eclipse Jakarta Data Implementation (jakarta.data/1.0) ${project.version}</Bundle-Description>
-
-                                <Specification-Title>Jakarta Data</Specification-Title>
-                                <Specification-Version>1.0</Specification-Version>
-                                <Specification-Vendor>Eclipse Foundation</Specification-Vendor>
-
-                                <Implementation-Title>JNoSQL Jakarta Persistence</Implementation-Title>
-                                <Implementation-Version>${project.version}</Implementation-Version>
-                                <Implementation-Vendor>Eclipse</Implementation-Vendor>
-                                <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
-
-                                <Import-Package>
-                                    jakarta.enterprise.inject.spi.configurator, !org.antlr.*, ${osgi.imports}
-                                </Import-Package>
-                                <Embed-Dependency>org.antlr:*,
-                                                    org.eclipse.jnosql.mapping:*,
-                                                    org.eclipse.jnosql.communication:*,
-                                                    jakarta.nosql:*
-                                </Embed-Dependency>
-                                <Export-Package>
-                                    org.eclipse.jnosql.jakartapersistence.*, org.eclipse.jnosql.communication.*,
-                                    org.eclipse.jnosql.mapping.core.spi.*, org.eclipse.jnosql.mapping.document.*, 
-                                    org.eclipse.jnosql.mapping.core.*, ${osgi.exports}
-                                </Export-Package>
-                            </instructions>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>bundle-manifest</id>
-                                <phase>process-classes</phase>
-                                <goals>
-                                    <goal>manifest</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
-                    <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <version>3.4.2</version>
-                        <configuration>
-                            <archive>
-                                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                            </archive>
-                        </configuration>
-                    </plugin>
-
-                    <plugin>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.6.0</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>shade</goal>
-                                </goals>
-                                <configuration>
-                                    <createDependencyReducedPom>true</createDependencyReducedPom>
-                                    <useDependencyReducedPomInJar>true</useDependencyReducedPomInJar>
-                                    <artifactSet>
-                                        <includes>
-                                            <!-- JNoSQL -->
-                                            <include>org.eclipse.jnosql.mapping:*:*</include>
-                                            <include>org.eclipse.jnosql.communication:*:*</include>
-                                            <include>jakarta.nosql:*:*</include>
-                                            <include>org.antlr:*:*</include>
-                                        </includes>
-                                    </artifactSet>
-    
-                                    <transformers>
-                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
-                                    </transformers>
-    
-                                    <!-- Disable CDI extensions in JNoSQL except the Jakarta Persistence extension 
-                                         until we integrate them properly. Currently they conflict with the Jakarta Persistence extension 
-                                    -->
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.eclipse.jnosql.mapping:jnosql-mapping-reflection</artifact>
-                                            <excludes>
-                                                <!-- Disable the default JNoSql ClassScanner to allow adding a custom one -->
-                                                <exclude>META-INF/services/org.eclipse.jnosql.mapping.metadata.ClassScanner</exclude>
-                                                <exclude>META-INF/services/jakarta.enterprise.inject.spi.Extension</exclude>
-                                            </excludes>
-                                        </filter>
-                                        <filter>
-                                            <artifact>org.eclipse.jnosql.mapping:jnosql-mapping-document</artifact>
-                                            <excludes>
-                                                <exclude>META-INF/services/jakarta.enterprise.inject.spi.Extension</exclude>
-                                            </excludes>
-                                        </filter>
-                                        <filter>
-                                            <artifact>org.eclipse.jnosql.mapping:jnosql-mapping-core</artifact>
-                                            <excludes>
-                                                <exclude>META-INF/services/jakarta.enterprise.inject.spi.Extension</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        
-        <profile>
-            <id>release</id>
-            
-            <properties>
-                <altDeploymentRepository>central::https://central.sonatype.com/repository/maven-snapshots</altDeploymentRepository>
-                <altSnapshotDeploymentRepository>central::https://central.sonatype.com/repository/maven-snapshots</altSnapshotDeploymentRepository>
-                <deploy.skip>false</deploy.skip>
-            </properties>
-            
-            <build>
-                <plugins>
-                    <!-- Signing with GPG is a requirement for a release deployment to Maven central. -->
-                    <plugin>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.4</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.7.0</version>
-                        <extensions>false</extensions>
-                        <configuration>
-                            <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

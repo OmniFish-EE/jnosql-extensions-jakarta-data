@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+~
+~  Copyright (c) 2025 Contributors to the Eclipse Foundation
+~   All rights reserved. This program and the accompanying materials
+~   are made available under the terms of the Eclipse Public License v1.0
+~   and Apache License v2.0 which accompanies this distribution.
+~   The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+~   and the Apache License v2.0 is available at http://www.opensource.org/licenses/apache2.0.php.
+~
+~   You may elect to redistribute this code under either of these licenses.
+~
+~   Contributors:
+~
+~   Ondro Mihalyi
+~   Arjan Tijms
+~
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.jnosql.mapping</groupId>
+        <artifactId>jnosql-jakarta-persistence-parent</artifactId>
+        <version>1.1.8-SNAPSHOT</version>
+    </parent>
+
+    <groupId>ee.omnifish</groupId>
+    <artifactId>jnosql-jakarta-persistence-osgi-bundle</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Eclipse JNoSQL Jakarta Persistence Driver OSGi bundle</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jnosql-jakarta-persistence</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.jnosql.communication</groupId>
+                    <artifactId>jnosql-communication-query</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.6.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        
+        <plugins>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+
+            <!-- Check licenses of dependencies -->
+            <plugin>
+                <groupId>org.eclipse.dash</groupId>
+                <artifactId>license-tool-plugin</artifactId>
+            </plugin>
+
+            <!-- Generate a "consumer pom" for the generated jar -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Creates the OSGi MANIFEST.MF file -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <_noimportjava>true</_noimportjava>
+                        <_runee>JavaSE-17</_runee>
+                        <!-- <Automatic-Module-Name>org.eclipse.jnosql.jakartapersistence</Automatic-Module-Name> -->
+                        <Extension-Name>org.eclipse.jnosql.jakartapersistence</Extension-Name>
+
+                        <Bundle-SymbolicName>org.eclipse.jnosql.jakartapersistence</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <Bundle-Name>Jakarta Data Implementation ${project.version}</Bundle-Name>
+                        <Bundle-Description>Eclipse Jakarta Data Implementation (jakarta.data/1.0) ${project.version}</Bundle-Description>
+
+                        <Specification-Title>Jakarta Data</Specification-Title>
+                        <Specification-Version>1.0</Specification-Version>
+                        <Specification-Vendor>Eclipse Foundation</Specification-Vendor>
+
+                        <Implementation-Title>JNoSQL Jakarta Persistence</Implementation-Title>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Implementation-Vendor>Eclipse</Implementation-Vendor>
+                        <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
+
+                        <Import-Package>
+                            !org.eclipse.jnosql.mapping.reflection.*,
+                            *
+                        </Import-Package>
+                        <!-- TODO: import antlr runtime instead of bundling it -->
+                        <Embed-Dependency>
+                            !jakarta.data-api.*,
+                            !jakarta.persistence-api.*,
+                            !jnosql-mapping-reflection,
+                            !classgraph,
+<!--                            jnosql-jakarta-persistence;inline=true,-->
+                            *;scope=compile|runtime
+                        </Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Export-Package>org.eclipse.jnosql.jakartapersistence.communication,*</Export-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <profiles>
+         <profile>
+            <id>release</id>
+            
+            <properties>
+                <altDeploymentRepository>central::https://central.sonatype.com/repository/maven-snapshots</altDeploymentRepository>
+                <altSnapshotDeploymentRepository>central::https://central.sonatype.com/repository/maven-snapshots</altSnapshotDeploymentRepository>
+                <deploy.skip>false</deploy.skip>
+            </properties>
+            
+            <build>
+                <plugins>
+                    <!-- Signing with GPG is a requirement for a release deployment to Maven central. -->
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.7.0</version>
+                        <extensions>false</extensions>
+                        <configuration>
+                            <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
