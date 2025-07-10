@@ -32,9 +32,10 @@ import java.util.logging.Logger;
 import org.eclipse.jnosql.communication.semistructured.DeleteQuery;
 import org.eclipse.jnosql.communication.semistructured.QueryType;
 import org.eclipse.jnosql.communication.semistructured.SelectQuery;
-import org.eclipse.jnosql.jakartapersistence.mapping.EnsureTransactionInterceptor;
+import org.eclipse.jnosql.jakartapersistence.CdiUtil;
 import org.eclipse.jnosql.jakartapersistence.mapping.PersistenceDocumentTemplate;
 import org.eclipse.jnosql.jakartapersistence.mapping.PersistencePreparedStatement;
+import org.eclipse.jnosql.jakartapersistence.mapping.spi.StatementInterceptionEvent;
 import org.eclipse.jnosql.mapping.core.Converters;
 import org.eclipse.jnosql.mapping.core.query.AbstractRepository;
 import org.eclipse.jnosql.mapping.core.repository.DynamicReturn;
@@ -82,7 +83,9 @@ public class JakartaPersistenceRepositoryProxy<T, K> extends AbstractSemiStructu
 
     @Override
     public Object invoke(Object instance, Method method, Object[] params) throws Throwable {
-        return EnsureTransactionInterceptor.invokeInTransaction(template.entityManager(), () -> super.invoke(instance, method, params));
+        StatementInterceptionEvent event = new StatementInterceptionEvent(template.entityManager(), () -> super.invoke(instance, method, params));
+        CdiUtil.getEvent(StatementInterceptionEvent.class).fire(event);
+        return event.getAction().call();
     }
 
     @Override
