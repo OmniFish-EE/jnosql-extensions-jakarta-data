@@ -15,40 +15,30 @@
  */
 package org.eclipse.jnosql.jakartapersistence.mapping;
 
-import jakarta.annotation.Priority;
-import jakarta.inject.Inject;
-import jakarta.interceptor.AroundInvoke;
-import jakarta.interceptor.Interceptor;
-import jakarta.interceptor.InvocationContext;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-
-import org.eclipse.jnosql.jakartapersistence.communication.PersistenceDatabaseManager;
-
 
 /**
  *
  * @author Ondro Mihalyi
  */
-@Interceptor
-@EnsureTransaction
-@Priority(100)
 public class EnsureTransactionInterceptor {
 
-    @Inject
-    PersistenceDatabaseManager manager;
+    @FunctionalInterface
+    public interface CallableWithThrowable<T> {
+        T call() throws Throwable;
+    }
 
-    @AroundInvoke
-    public Object intercept(InvocationContext ctx) throws Exception {
-        EntityManager entityManager = manager.getEntityManager();
+    public static Object invokeInTransaction(EntityManager entityManager, CallableWithThrowable<Object> action) throws Throwable {
+        // TODO: Support JTA transactions
         boolean inTransaction = entityManager.isJoinedToTransaction();
         if (inTransaction) {
-            return ctx.proceed();
+            return action.call();
         } else {
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
             try {
-                Object result = ctx.proceed();
+                Object result = action.call();
                 transaction.commit();
                 return result;
             } catch (Exception e) {
