@@ -14,7 +14,6 @@
  */
 package org.eclipse.jnosql.jakartapersistence.mapping.spi;
 
-
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
@@ -37,9 +36,15 @@ public class JakartaPersistenceExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(JakartaPersistenceExtension.class.getName());
 
+    private ClassScanner scanner;
+
+    public void setScanner(ClassScanner scanner) {
+        this.scanner = scanner;
+    }
+
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery) {
 
-        ClassScanner scanner = ClassScanner.load();
+        ClassScanner scanner = this.scanner != null ? this.scanner : ClassScanner.load();
 
         Set<Class<?>> crudTypes = scanner.repositoriesStandard();
         Set<Class<?>> customRepositories = scanner.customRepositories();
@@ -57,5 +62,6 @@ public class JakartaPersistenceExtension implements Extension {
         customRepositories.forEach(type -> {
             afterBeanDiscovery.addBean(new CustomRepositoryPersistenceBean<>(type));
         });
+
     }
 }
